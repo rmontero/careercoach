@@ -1,41 +1,80 @@
 @import 'tailwindcss';
 
 /*
- * Design tokens. Warm paper + ink, with one vermilion accent that means "live".
- * Dark mode follows the OS; every token is redefined so no component hard-codes a color.
+ * Design tokens: warm paper + ink, with a sunset-to-indigo brand gradient.
+ *
+ * - `--brand-*` are DECORATIVE colors (orb, glows, borders, ring strokes). Never use them for text.
+ * - Text and icons that carry meaning use `--accent-text`, `--good`, `--warn` (all >= 4.5:1 on
+ *   their backgrounds; verified for both themes).
+ * - Buttons use the deep `--btn-*` stops so white text stays >= 4.5:1 across the whole gradient.
+ * Dark mode follows the OS and redefines every token; nothing hard-codes a theme.
  */
 :root {
-  --paper: #f5f1e8;
-  --surface: #fcfaf5;
+  --paper: #f6f2ea;
+  --surface: #fffdf8;
   --ink: #171614;
-  --muted: #6b665c;
-  --line: #e1dacb;
+  --on-ink: #f6f2ea;
+  --muted: #5b564c;
+  --line: #e3dccd;
   --line-strong: #cfc6b3;
-  --accent: #d9481c;
-  --accent-soft: #f7dcd1;
-  --on-ink: #f5f1e8;
-  --good: #2f7d5b;
-  --good-soft: #dcebe2;
-  --warn: #9a6512;
-  --warn-soft: #f4e6c8;
+
+  --brand-1: #ff7a45;
+  --brand-2: #e8365d;
+  --brand-3: #6d4aff;
+  --accent: #e8503a;
+  --accent-text: #b23a10;
+  --accent-soft: #fbe4da;
+  --good: #1b6a47;
+  --good-soft: #dcefe4;
+  --warn: #7a4b06;
+  --warn-soft: #f6e7c6;
+
+  --btn-1: #c2410c;
+  --btn-2: #be123c;
+  --btn-3: #4f46e5;
+  --grad-brand: linear-gradient(120deg, var(--brand-1), var(--brand-2) 52%, var(--brand-3));
+  --grad-btn: linear-gradient(120deg, var(--btn-1), var(--btn-2) 50%, var(--btn-3));
+  --grad-text: linear-gradient(100deg, #c2410c, #be123c 45%, #5b3fe0);
+
+  --glass: color-mix(in oklab, var(--surface) 76%, transparent);
+  --glass-border: color-mix(in oklab, var(--ink) 9%, transparent);
+  --glass-shine: rgba(255, 255, 255, 0.7);
+  --shadow-soft: 0 24px 60px -32px rgba(70, 30, 20, 0.35);
+  --ambient-1: 30%;
+  --ambient-2: 24%;
+  --ambient-3: 20%;
+
+  --ease-out: cubic-bezier(0.2, 0.7, 0.2, 1);
   color-scheme: light;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --paper: #121110;
-    --surface: #1b1a18;
+    --paper: #0f0e0d;
+    --surface: #1a1917;
     --ink: #f3efe6;
-    --muted: #a09a8d;
-    --line: #2c2a26;
+    --on-ink: #0f0e0d;
+    --muted: #b8b2a6;
+    --line: #2a2825;
     --line-strong: #3d3a34;
+
     --accent: #ff6b3d;
-    --accent-soft: #3a211a;
-    --on-ink: #121110;
-    --good: #5fbf93;
-    --good-soft: #1b2b23;
-    --warn: #e0a94a;
+    --accent-text: #ff9068;
+    --accent-soft: #3b201a;
+    --good: #6fd0a3;
+    --good-soft: #1a2b22;
+    --warn: #e8b458;
     --warn-soft: #33290f;
+
+    --grad-text: linear-gradient(100deg, #ff8a5c, #ff5c85 45%, #9a86ff);
+
+    --glass: color-mix(in oklab, var(--surface) 68%, transparent);
+    --glass-border: color-mix(in oklab, #fff 11%, transparent);
+    --glass-shine: rgba(255, 255, 255, 0.08);
+    --shadow-soft: 0 24px 70px -30px rgba(0, 0, 0, 0.8);
+    --ambient-1: 30%;
+    --ambient-2: 26%;
+    --ambient-3: 24%;
     color-scheme: dark;
   }
 }
@@ -44,46 +83,267 @@
   --color-paper: var(--paper);
   --color-surface: var(--surface);
   --color-ink: var(--ink);
+  --color-on-ink: var(--on-ink);
   --color-muted: var(--muted);
   --color-line: var(--line);
   --color-line-strong: var(--line-strong);
   --color-accent: var(--accent);
+  --color-accent-text: var(--accent-text);
   --color-accent-soft: var(--accent-soft);
-  --color-on-ink: var(--on-ink);
   --color-good: var(--good);
   --color-good-soft: var(--good-soft);
   --color-warn: var(--warn);
   --color-warn-soft: var(--warn-soft);
+  --color-brand-1: var(--brand-1);
+  --color-brand-2: var(--brand-2);
+  --color-brand-3: var(--brand-3);
   --font-sans: var(--font-geist), ui-sans-serif, system-ui, sans-serif;
   --font-serif: var(--font-instrument), ui-serif, Georgia, serif;
   --font-mono: var(--font-geist-mono), ui-monospace, monospace;
 }
 
+/* The canvas color lives on <html> so the fixed ambient layer (z-index: -1) paints above it. */
 html {
   background: var(--paper);
   -webkit-text-size-adjust: 100%;
 }
 
 body {
-  background: var(--paper);
   color: var(--ink);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+  -webkit-tap-highlight-color: transparent;
 }
 
 ::selection {
-  background: var(--accent);
+  background: var(--brand-2);
   color: #fff;
 }
 
 :focus-visible {
-  outline: 2px solid var(--accent);
+  outline: 2px solid var(--brand-3);
   outline-offset: 3px;
-  border-radius: 6px;
+  border-radius: 8px;
 }
 
-/* ---------- The interviewer "orb" ---------- */
+/*
+ * Everything below lives in `@layer components` so Tailwind utilities (including responsive
+ * ones like `sm:bg-none`) can override it. Un-layered CSS would beat utilities.
+ */
+@layer components {
+/* ---------- Ambient background: three soft blobs, transform-only, very slow ---------- */
+
+.ambient {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+  background: radial-gradient(60vmax 45vmax at 88% 6%, color-mix(in oklab, var(--brand-2) var(--ambient-2), transparent), transparent 70%);
+}
+.ambient::before,
+.ambient::after {
+  content: '';
+  position: absolute;
+  width: 95vmax;
+  height: 95vmax;
+  border-radius: 50%;
+  will-change: transform;
+}
+.ambient::before {
+  top: -48vmax;
+  left: -38vmax;
+  background: radial-gradient(closest-side, color-mix(in oklab, var(--brand-1) var(--ambient-1), transparent), transparent 72%);
+  animation: drift-a 44s ease-in-out infinite alternate;
+}
+.ambient::after {
+  bottom: -55vmax;
+  right: -42vmax;
+  background: radial-gradient(closest-side, color-mix(in oklab, var(--brand-3) var(--ambient-3), transparent), transparent 72%);
+  animation: drift-b 52s ease-in-out infinite alternate;
+}
+@keyframes drift-a {
+  to { transform: translate3d(9vmax, 6vmax, 0) scale(1.08); }
+}
+@keyframes drift-b {
+  to { transform: translate3d(-8vmax, -7vmax, 0) scale(1.1); }
+}
+
+/* ---------- Surfaces ---------- */
+
+.glass {
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  box-shadow: inset 0 1px 0 var(--glass-shine), var(--shadow-soft);
+}
+@supports (backdrop-filter: blur(1px)) {
+  .glass {
+    -webkit-backdrop-filter: blur(16px) saturate(1.25);
+    backdrop-filter: blur(16px) saturate(1.25);
+  }
+}
+
+/*
+ * Choice card: the visible face of a radio (`<input class="sr-only"> + <span class="choice">`).
+ * Selected = gradient hairline + soft brand shadow; keyboard focus draws a ring.
+ */
+.choice {
+  border: 1.5px solid var(--line);
+  background: color-mix(in oklab, var(--surface) 62%, transparent);
+  transition: transform 200ms var(--ease-out), border-color 200ms, box-shadow 220ms var(--ease-out), background 200ms;
+}
+@media (hover: hover) {
+  .choice:hover {
+    border-color: var(--line-strong);
+    transform: translateY(-2px);
+  }
+}
+input:checked + .choice {
+  border-color: transparent;
+  background: linear-gradient(var(--surface), var(--surface)) padding-box, var(--grad-brand) border-box;
+  box-shadow: 0 16px 36px -24px color-mix(in oklab, var(--brand-2) 70%, transparent);
+}
+input:focus-visible + .choice {
+  outline: 2px solid var(--brand-3);
+  outline-offset: 3px;
+}
+.choice__check {
+  display: none;
+}
+input:checked + .choice .choice__check {
+  display: grid;
+}
+
+.grad-text {
+  background: var(--grad-text);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 999px;
+  padding: 0.4rem 0.85rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+}
+
+.sticky-cta {
+  background: linear-gradient(to top, color-mix(in oklab, var(--paper) 94%, transparent) 62%, transparent);
+}
+@supports (backdrop-filter: blur(1px)) {
+  .sticky-cta {
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+  }
+}
+
+/* ---------- Buttons (pressed state uses transform only, so layout never shifts) ---------- */
+
+.btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 3rem;
+  padding: 0 1.5rem;
+  border-radius: 999px;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  line-height: 1;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: transform 160ms var(--ease-out), box-shadow 220ms var(--ease-out), background-position 500ms var(--ease-out),
+    border-color 200ms, color 200ms, opacity 200ms;
+}
+.btn:active:not(:disabled) {
+  transform: scale(0.98);
+}
+.btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.btn-primary {
+  color: #fff;
+  overflow: hidden;
+  background: var(--grad-btn);
+  background-size: 170% 100%;
+  background-position: 0% 50%;
+  box-shadow: 0 14px 34px -14px color-mix(in oklab, var(--btn-2) 75%, transparent), inset 0 1px 0 rgba(255, 255, 255, 0.28);
+}
+.btn-primary::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(110deg, transparent 32%, rgba(255, 255, 255, 0.26) 50%, transparent 68%);
+  transform: translateX(-130%);
+  pointer-events: none;
+}
+@media (hover: hover) {
+  .btn-primary:hover:not(:disabled) {
+    background-position: 100% 50%;
+    box-shadow: 0 18px 40px -14px color-mix(in oklab, var(--btn-2) 85%, transparent), inset 0 1px 0 rgba(255, 255, 255, 0.28);
+  }
+  .btn-primary:hover:not(:disabled)::after {
+    transform: translateX(130%);
+    transition: transform 800ms var(--ease-out);
+  }
+}
+
+.btn-ink {
+  background: var(--ink);
+  color: var(--on-ink);
+}
+.btn-ghost {
+  color: var(--ink);
+  background: var(--glass);
+  border: 1px solid var(--line-strong);
+}
+@media (hover: hover) {
+  .btn-ink:hover:not(:disabled) {
+    opacity: 0.88;
+  }
+  .btn-ghost:hover:not(:disabled) {
+    border-color: var(--ink);
+  }
+}
+
+/* ---------- Segmented control with a sliding thumb ---------- */
+
+.seg {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(var(--n), minmax(0, 1fr));
+  padding: 4px;
+  border-radius: 999px;
+  background: color-mix(in oklab, var(--paper) 70%, transparent);
+  border: 1px solid var(--line);
+}
+.seg__thumb {
+  position: absolute;
+  top: 4px;
+  bottom: 4px;
+  left: 4px;
+  width: calc((100% - 8px) / var(--n));
+  border-radius: 999px;
+  background: var(--ink);
+  transform: translateX(calc(var(--i) * 100%));
+  transition: transform 300ms var(--ease-out);
+}
+
+/* ---------- The interviewer orb ---------- */
 
 .orb {
   /* --level (0..1, live mic loudness) is set by an ancestor and inherited; it defaults to 0. */
@@ -94,13 +354,24 @@ body {
   place-items: center;
 }
 
+.orb__glow {
+  position: absolute;
+  inset: -55%;
+  border-radius: 999px;
+  background: radial-gradient(closest-side, color-mix(in oklab, var(--brand-2) 34%, transparent), color-mix(in oklab, var(--brand-3) 16%, transparent) 55%, transparent 75%);
+  opacity: 0.55;
+  transform: scale(calc(0.9 + var(--level, 0) * 0.35));
+  transition: opacity 500ms ease, transform 220ms ease;
+  pointer-events: none;
+}
+
 .orb__core {
   position: relative;
   width: 46%;
   aspect-ratio: 1;
   border-radius: 999px;
-  background: radial-gradient(circle at 32% 28%, color-mix(in oklab, var(--accent) 55%, white), var(--accent) 62%);
-  box-shadow: 0 0 0 1px color-mix(in oklab, var(--accent) 60%, transparent), 0 18px 50px -12px color-mix(in oklab, var(--accent) 65%, transparent);
+  background: radial-gradient(circle at 30% 24%, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0) 42%), linear-gradient(140deg, var(--brand-1), var(--brand-2) 55%, var(--brand-3));
+  box-shadow: 0 0 0 1px color-mix(in oklab, var(--brand-2) 55%, transparent), 0 22px 60px -14px color-mix(in oklab, var(--brand-2) 70%, transparent);
   transition: transform 220ms ease, filter 300ms ease, opacity 300ms ease;
   transform: scale(calc(1 + var(--level, 0) * 0.28));
 }
@@ -110,32 +381,35 @@ body {
   inset: 0;
   margin: auto;
   border-radius: 999px;
-  border: 1.5px solid color-mix(in oklab, var(--accent) 55%, transparent);
+  border: 1.5px solid color-mix(in oklab, var(--brand-2) 55%, transparent);
   opacity: 0;
 }
-.orb__ring:nth-child(1) { width: 62%; height: 62%; }
-.orb__ring:nth-child(2) { width: 80%; height: 80%; }
-.orb__ring:nth-child(3) { width: 100%; height: 100%; }
+.orb__ring--a { width: 62%; height: 62%; }
+.orb__ring--b { width: 80%; height: 80%; }
+.orb__ring--c { width: 100%; height: 100%; }
 
 .orb__arc {
   position: absolute;
   inset: 8%;
   border-radius: 999px;
-  background: conic-gradient(from 0deg, transparent 0 62%, var(--accent) 100%);
+  background: conic-gradient(from 0deg, transparent 0 55%, var(--brand-3) 82%, var(--brand-2) 100%);
   -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 3px), #000 calc(100% - 2px));
   mask: radial-gradient(farthest-side, transparent calc(100% - 3px), #000 calc(100% - 2px));
   opacity: 0;
 }
 
-.orb[data-state='connecting'] .orb__core { opacity: 0.55; animation: orb-breathe 2.4s ease-in-out infinite; }
-.orb[data-state='listening'] .orb__ring:nth-child(1) { opacity: 0.55; }
-.orb[data-state='listening'] .orb__ring:nth-child(2) { opacity: 0.25; }
-.orb[data-state='thinking'] .orb__arc { opacity: 1; animation: orb-spin 1.2s linear infinite; }
+.orb[data-state='connecting'] .orb__core { opacity: 0.6; animation: orb-breathe 2.4s ease-in-out infinite; }
+.orb[data-state='connecting'] .orb__glow { opacity: 0.3; }
+.orb[data-state='listening'] .orb__ring--a { opacity: 0.55; }
+.orb[data-state='listening'] .orb__ring--b { opacity: 0.25; }
+.orb[data-state='thinking'] .orb__arc { opacity: 1; animation: orb-spin 1.3s linear infinite; }
 .orb[data-state='thinking'] .orb__core { animation: orb-breathe 1.6s ease-in-out infinite; }
+.orb[data-state='speaking'] .orb__glow { opacity: 0.95; }
 .orb[data-state='speaking'] .orb__ring { animation: orb-pulse 2s ease-out infinite; }
-.orb[data-state='speaking'] .orb__ring:nth-child(2) { animation-delay: 0.45s; }
-.orb[data-state='speaking'] .orb__ring:nth-child(3) { animation-delay: 0.9s; }
+.orb[data-state='speaking'] .orb__ring--b { animation-delay: 0.45s; }
+.orb[data-state='speaking'] .orb__ring--c { animation-delay: 0.9s; }
 .orb[data-state='muted'] .orb__core { filter: grayscale(1); opacity: 0.5; }
+.orb[data-state='muted'] .orb__glow { opacity: 0.15; }
 .orb[data-state='ended'] .orb__core { filter: grayscale(1); opacity: 0.35; }
 
 @keyframes orb-breathe {
@@ -150,18 +424,58 @@ body {
   100% { transform: scale(1.08); opacity: 0; }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .orb__core, .orb__ring, .orb__arc { animation: none !important; transition: none !important; }
-  .orb[data-state='speaking'] .orb__ring:nth-child(1) { opacity: 0.6; }
-  .orb[data-state='thinking'] .orb__arc { opacity: 0.6; }
-}
+/* ---------- Entrances and micro-interactions ---------- */
 
-/* Soft entrance for screens; disabled for reduced motion above via the same media query. */
 @keyframes rise {
-  from { opacity: 0; transform: translateY(8px); }
+  from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
 }
-.rise { animation: rise 420ms cubic-bezier(0.2, 0.7, 0.2, 1) both; }
+/* Stagger children by setting --i on each: style={{ '--i': 2 }} */
+.rise {
+  animation: rise 480ms var(--ease-out) both;
+  animation-delay: calc(var(--i, 0) * 70ms);
+}
+
+@keyframes pop {
+  from { opacity: 0; transform: scale(0.4); }
+  to { opacity: 1; transform: scale(1); }
+}
+.pop {
+  animation: pop 260ms var(--ease-out) both;
+}
+
+@keyframes bar-grow {
+  from { transform: scaleX(0); }
+}
+.bar-fill {
+  transform-origin: left center;
+  transform: scaleX(var(--v, 1));
+  animation: bar-grow 800ms var(--ease-out) both;
+  animation-delay: calc(240ms + var(--i, 0) * 90ms);
+}
+
+@keyframes ring-fill {
+  from { stroke-dashoffset: 100; }
+}
+.ring-fill {
+  stroke-dasharray: 100;
+  stroke-dashoffset: calc(100 - var(--pct, 0));
+  animation: ring-fill 1100ms var(--ease-out) both;
+  animation-delay: 200ms;
+}
+
+} /* end @layer components */
+
+/* ---------- Reduced motion: nothing moves; state is still conveyed statically ---------- */
+
 @media (prefers-reduced-motion: reduce) {
-  .rise { animation: none; }
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition-duration: 0.01ms !important;
+  }
+  .orb[data-state='speaking'] .orb__ring--a { opacity: 0.6; }
+  .orb[data-state='thinking'] .orb__arc { opacity: 0.6; }
+  .btn-primary::after { display: none; }
 }

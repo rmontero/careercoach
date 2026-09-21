@@ -205,17 +205,17 @@ export default function CoachApp() {
           />
         )}
         {phase.name === 'report-error' && (
-          <div className="mx-auto max-w-2xl px-5 pt-16 sm:px-8">
-            <h1 className="font-serif text-4xl leading-tight sm:text-5xl">Session ended</h1>
-            <p role="alert" className="mt-5 text-lg leading-relaxed text-muted">
-              {phase.message}
-            </p>
-            <div className="mt-8 flex flex-wrap gap-3">
+          <div className="rise mx-auto max-w-2xl px-4 pt-10 sm:px-8 sm:pt-16">
+            <div className="glass rounded-[28px] p-6 sm:p-8">
+              <h1 className="font-serif text-4xl leading-tight sm:text-5xl">Session ended</h1>
+              <p role="alert" className="mt-4 text-base leading-relaxed text-muted sm:text-lg">
+                {phase.message}
+              </p>
               {phase.retryable && (
                 <button
                   type="button"
                   onClick={() => void generateFeedback(phase)}
-                  className="rounded-full bg-accent px-6 py-3 text-sm font-medium text-white transition hover:opacity-90"
+                  className="btn btn-primary mt-6 w-full sm:w-auto"
                 >
                   Try feedback again
                 </button>
@@ -232,18 +232,22 @@ export default function CoachApp() {
 
 function SiteHeader() {
   return (
-    <header className="mx-auto flex w-full max-w-6xl items-center justify-between px-5 py-5 sm:px-8">
+    <header className="mx-auto flex w-full max-w-6xl items-center justify-between px-4 pt-[max(0.75rem,env(safe-area-inset-top))] sm:px-8 sm:pt-4">
       <div className="flex items-center gap-2.5">
-        <span aria-hidden className="grid size-7 place-items-center rounded-full border border-accent/50">
-          <span className="size-3 rounded-full bg-accent" />
-        </span>
+        <span
+          aria-hidden
+          className="size-8 rounded-full shadow-[0_8px_20px_-8px_var(--brand-2)]"
+          style={{
+            background: 'radial-gradient(circle at 30% 25%, rgba(255,255,255,0.8), rgba(255,255,255,0) 42%), var(--grad-brand)',
+          }}
+        />
         <span className="font-serif text-2xl leading-none">career coach</span>
       </div>
       <a
         href="https://www.agora.io/en/"
         target="_blank"
         rel="noopener noreferrer"
-        className="font-mono text-[11px] uppercase tracking-[0.16em] text-muted transition hover:text-ink"
+        className="-mr-3 inline-flex min-h-11 items-center px-3 font-mono text-xs uppercase tracking-[0.16em] text-muted transition-colors hover:text-ink"
       >
         Powered by Agora
       </a>
@@ -253,7 +257,7 @@ function SiteHeader() {
 
 function SiteFooter() {
   return (
-    <footer className="mx-auto max-w-6xl px-5 pb-10 text-xs text-muted sm:px-8">
+    <footer className="mx-auto max-w-6xl px-4 pb-10 text-xs leading-relaxed text-muted sm:px-8">
       A proof of concept. Live voice runs on{' '}
       <a
         className="underline decoration-line-strong underline-offset-2 hover:text-ink"
@@ -282,10 +286,12 @@ function Analyzing() {
     return () => clearInterval(id);
   }, []);
   return (
-    <div className="rise mx-auto flex max-w-md flex-col items-center px-5 pt-24 text-center">
+    <div className="rise mx-auto flex max-w-md flex-col items-center px-4 pt-16 text-center sm:pt-24">
       <Orb state="thinking" size="150px" />
-      <h1 className="mt-10 font-serif text-4xl">Reading between the lines</h1>
-      <p role="status" className="mt-3 text-muted">
+      <h1 className="mt-12 font-serif text-4xl leading-tight">
+        Reading <em className="grad-text pr-1 italic">between the lines</em>
+      </h1>
+      <p role="status" className="mt-3 min-h-6 text-muted">
         {ANALYZING_STEPS[step]}
       </p>
       <p className="mt-6 text-xs text-muted">This usually takes about 20–40 seconds.</p>

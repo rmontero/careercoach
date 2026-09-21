@@ -17,7 +17,7 @@ export function TranscriptPanel({ turns, interviewerName, className }: Transcrip
   // Keep the newest line in view, unless the candidate scrolled up to re-read something.
   useEffect(() => {
     const el = scroller.current;
-    if (el && pinned.current) el.scrollTop = el.scrollHeight;
+    if (el && pinned.current) el.scrollTo({ top: el.scrollHeight, behavior: 'smooth' });
   }, [turns]);
 
   return (
@@ -30,23 +30,32 @@ export function TranscriptPanel({ turns, interviewerName, className }: Transcrip
       role="log"
       aria-label="Live transcript"
       aria-relevant="additions"
-      className={cn('overflow-y-auto', className)}
+      className={cn('overflow-y-auto overscroll-contain', className)}
     >
       {turns.length === 0 ? (
         <p className="text-sm text-muted">The conversation will appear here as you talk.</p>
       ) : (
-        <ol className="space-y-4">
-          {turns.map((turn) => (
-            <li key={turn.id} className={cn(turn.speaker === 'candidate' && 'pl-6')}>
-              <p className="mb-0.5 font-mono text-[11px] uppercase tracking-wider text-muted">
-                {turn.speaker === 'interviewer' ? interviewerName : 'You'}
-              </p>
-              <p className={cn('text-[15px] leading-relaxed', turn.inProgress && 'opacity-70')}>
-                {turn.text}
-                {turn.inProgress ? <span className="ml-0.5 inline-block animate-pulse">▍</span> : null}
-              </p>
-            </li>
-          ))}
+        <ol className="space-y-3">
+          {turns.map((turn) => {
+            const mine = turn.speaker === 'candidate';
+            return (
+              <li key={turn.id} className={cn('flex flex-col', mine ? 'items-end pl-8' : 'items-start pr-8')}>
+                <p className="mb-1 px-1 font-mono text-xs uppercase tracking-wider text-muted">
+                  {mine ? 'You' : interviewerName}
+                </p>
+                <p
+                  className={cn(
+                    'rounded-2xl px-3.5 py-2.5 text-[15px] leading-relaxed transition-opacity',
+                    mine ? 'rounded-tr-md bg-accent-soft' : 'rounded-tl-md border border-line bg-surface/70',
+                    turn.inProgress && 'opacity-75',
+                  )}
+                >
+                  {turn.text}
+                  {turn.inProgress ? <span className="ml-0.5 inline-block motion-safe:animate-pulse">▍</span> : null}
+                </p>
+              </li>
+            );
+          })}
         </ol>
       )}
     </div>
