@@ -1,0 +1,167 @@
+@import 'tailwindcss';
+
+/*
+ * Design tokens. Warm paper + ink, with one vermilion accent that means "live".
+ * Dark mode follows the OS; every token is redefined so no component hard-codes a color.
+ */
+:root {
+  --paper: #f5f1e8;
+  --surface: #fcfaf5;
+  --ink: #171614;
+  --muted: #6b665c;
+  --line: #e1dacb;
+  --line-strong: #cfc6b3;
+  --accent: #d9481c;
+  --accent-soft: #f7dcd1;
+  --on-ink: #f5f1e8;
+  --good: #2f7d5b;
+  --good-soft: #dcebe2;
+  --warn: #9a6512;
+  --warn-soft: #f4e6c8;
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper: #121110;
+    --surface: #1b1a18;
+    --ink: #f3efe6;
+    --muted: #a09a8d;
+    --line: #2c2a26;
+    --line-strong: #3d3a34;
+    --accent: #ff6b3d;
+    --accent-soft: #3a211a;
+    --on-ink: #121110;
+    --good: #5fbf93;
+    --good-soft: #1b2b23;
+    --warn: #e0a94a;
+    --warn-soft: #33290f;
+    color-scheme: dark;
+  }
+}
+
+@theme inline {
+  --color-paper: var(--paper);
+  --color-surface: var(--surface);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-accent: var(--accent);
+  --color-accent-soft: var(--accent-soft);
+  --color-on-ink: var(--on-ink);
+  --color-good: var(--good);
+  --color-good-soft: var(--good-soft);
+  --color-warn: var(--warn);
+  --color-warn-soft: var(--warn-soft);
+  --font-sans: var(--font-geist), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-instrument), ui-serif, Georgia, serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+}
+
+html {
+  background: var(--paper);
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: var(--accent);
+  color: #fff;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+/* ---------- The interviewer "orb" ---------- */
+
+.orb {
+  /* --level (0..1, live mic loudness) is set by an ancestor and inherited; it defaults to 0. */
+  position: relative;
+  width: var(--orb-size, 220px);
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+}
+
+.orb__core {
+  position: relative;
+  width: 46%;
+  aspect-ratio: 1;
+  border-radius: 999px;
+  background: radial-gradient(circle at 32% 28%, color-mix(in oklab, var(--accent) 55%, white), var(--accent) 62%);
+  box-shadow: 0 0 0 1px color-mix(in oklab, var(--accent) 60%, transparent), 0 18px 50px -12px color-mix(in oklab, var(--accent) 65%, transparent);
+  transition: transform 220ms ease, filter 300ms ease, opacity 300ms ease;
+  transform: scale(calc(1 + var(--level, 0) * 0.28));
+}
+
+.orb__ring {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  border-radius: 999px;
+  border: 1.5px solid color-mix(in oklab, var(--accent) 55%, transparent);
+  opacity: 0;
+}
+.orb__ring:nth-child(1) { width: 62%; height: 62%; }
+.orb__ring:nth-child(2) { width: 80%; height: 80%; }
+.orb__ring:nth-child(3) { width: 100%; height: 100%; }
+
+.orb__arc {
+  position: absolute;
+  inset: 8%;
+  border-radius: 999px;
+  background: conic-gradient(from 0deg, transparent 0 62%, var(--accent) 100%);
+  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 3px), #000 calc(100% - 2px));
+  mask: radial-gradient(farthest-side, transparent calc(100% - 3px), #000 calc(100% - 2px));
+  opacity: 0;
+}
+
+.orb[data-state='connecting'] .orb__core { opacity: 0.55; animation: orb-breathe 2.4s ease-in-out infinite; }
+.orb[data-state='listening'] .orb__ring:nth-child(1) { opacity: 0.55; }
+.orb[data-state='listening'] .orb__ring:nth-child(2) { opacity: 0.25; }
+.orb[data-state='thinking'] .orb__arc { opacity: 1; animation: orb-spin 1.2s linear infinite; }
+.orb[data-state='thinking'] .orb__core { animation: orb-breathe 1.6s ease-in-out infinite; }
+.orb[data-state='speaking'] .orb__ring { animation: orb-pulse 2s ease-out infinite; }
+.orb[data-state='speaking'] .orb__ring:nth-child(2) { animation-delay: 0.45s; }
+.orb[data-state='speaking'] .orb__ring:nth-child(3) { animation-delay: 0.9s; }
+.orb[data-state='muted'] .orb__core { filter: grayscale(1); opacity: 0.5; }
+.orb[data-state='ended'] .orb__core { filter: grayscale(1); opacity: 0.35; }
+
+@keyframes orb-breathe {
+  0%, 100% { transform: scale(0.96); }
+  50% { transform: scale(1.04); }
+}
+@keyframes orb-spin {
+  to { transform: rotate(360deg); }
+}
+@keyframes orb-pulse {
+  0% { transform: scale(0.72); opacity: 0.7; }
+  100% { transform: scale(1.08); opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .orb__core, .orb__ring, .orb__arc { animation: none !important; transition: none !important; }
+  .orb[data-state='speaking'] .orb__ring:nth-child(1) { opacity: 0.6; }
+  .orb[data-state='thinking'] .orb__arc { opacity: 0.6; }
+}
+
+/* Soft entrance for screens; disabled for reduced motion above via the same media query. */
+@keyframes rise {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.rise { animation: rise 420ms cubic-bezier(0.2, 0.7, 0.2, 1) both; }
+@media (prefers-reduced-motion: reduce) {
+  .rise { animation: none; }
+}

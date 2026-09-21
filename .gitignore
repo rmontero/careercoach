@@ -14,7 +14,7 @@ dist/
 downloads/
 eggs/
 .eggs/
-lib/
+# (Python template ignored `lib/`; this app keeps its source in ./lib)
 lib64/
 parts/
 sdist/
@@ -192,3 +192,19 @@ cython_debug/
 #  refer to https://docs.cursor.com/context/ignore-files
 .cursorignore
 .cursorindexingignore
+
+# --- Next.js / Node ---
+node_modules/
+.next/
+out/
+next-env.d.ts
+*.tsbuildinfo
+.pnpm-store/
+npm-debug.log*
+pnpm-debug.log*
+
+# Local env files (the committed template is .env.example)
+.env*.local
+
+# Vercel
+.vercel
