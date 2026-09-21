@@ -61,7 +61,7 @@ Speech-to-text (Deepgram), the interviewer LLM (OpenAI), and text-to-speech (Min
 
 ## Deploy to Vercel (career-coach.cc)
 
-1. Import this repo as a Vercel project (framework: Next.js is auto-detected).
+1. Import this repo as a Vercel project. `vercel.json` pins the framework to Next.js, so it builds correctly even if the project was first created while the repo was empty (Vercel then guesses "Node" and fails with `No entrypoint found`).
 2. Add the environment variables above (Production, and Preview if you want previews to work).
 3. Add the domain: Project → Settings → Domains → `career-coach.cc` (and optionally `www.career-coach.cc` redirecting to the apex). Follow Vercel's DNS instructions at the registrar.
 4. Deploy. The feedback route sets `maxDuration = 60`, which fits every plan.
