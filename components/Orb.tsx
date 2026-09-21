@@ -10,8 +10,9 @@ interface OrbProps {
 }
 
 /**
- * The interviewer's presence: it pulses when speaking, spins while thinking, rests while
- * listening. It also swells with the candidate's voice via the inherited `--level` CSS variable.
+ * The interviewer's presence: it glows and pulses when speaking, spins while thinking, rests
+ * while listening. It also swells with the candidate's voice via the inherited `--level` CSS
+ * variable. Everything animates with transform/opacity only.
  */
 export function Orb({ state, size = '220px', className }: OrbProps) {
   return (
@@ -21,9 +22,10 @@ export function Orb({ state, size = '220px', className }: OrbProps) {
       style={{ '--orb-size': size } as React.CSSProperties}
       aria-hidden="true"
     >
-      <span className="orb__ring" />
-      <span className="orb__ring" />
-      <span className="orb__ring" />
+      <span className="orb__glow" />
+      <span className="orb__ring orb__ring--a" />
+      <span className="orb__ring orb__ring--b" />
+      <span className="orb__ring orb__ring--c" />
       <span className="orb__arc" />
       <span className="orb__core" />
     </div>

@@ -34,6 +34,8 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
+  // Lets fixed bars extend under the notch/home indicator; they pad themselves with env(safe-area-*).
+  viewportFit: 'cover',
   themeColor: [
     { media: '(prefers-color-scheme: light)', color: '#f5f1e8' },
     { media: '(prefers-color-scheme: dark)', color: '#121110' },
@@ -43,7 +45,10 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`${geist.variable} ${geistMono.variable} ${instrument.variable}`}>
-      <body className="min-h-dvh antialiased">{children}</body>
+      <body className="min-h-dvh antialiased">
+        <div className="ambient" aria-hidden="true" />
+        {children}
+      </body>
     </html>
   );
 }
