@@ -14,7 +14,7 @@ dist/
 downloads/
 eggs/
 .eggs/
-lib/
+# (Python template ignored `lib/`; this app keeps its source in ./lib)
 lib64/
 parts/
 sdist/
