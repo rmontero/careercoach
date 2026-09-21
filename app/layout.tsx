@@ -11,7 +11,8 @@ const instrument = Instrument_Serif({
   variable: '--font-instrument',
 });
 
-const SITE_URL = 'https://career-coach.cc';
+// Canonical host. The apex (career-coach.cc) 308-redirects here in the Vercel project's domain settings.
+const SITE_URL = 'https://www.career-coach.cc';
 const TITLE = 'Career Coach: practice the interview before it counts';
 const DESCRIPTION =
   'A voice-first mock interviewer for engineers. Talk through behavioral, system design, coding, frontend, backend, and leadership interviews, then get a scorecard on how you did.';

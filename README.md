@@ -2,7 +2,7 @@
 
 Practice the interview before it counts. **Career Coach** is a voice-first mock interviewer for engineers: you talk to a live AI interviewer (behavioral, system design, coding, frontend, backend, or engineering leadership), and when you finish you get a scorecard grounded in what you actually said.
 
-Live target: <https://career-coach.cc> (Vercel). This is a proof of concept.
+Live at <https://www.career-coach.cc> (Vercel); `career-coach.cc` redirects there. This is a proof of concept.
 
 ## How it works
 
@@ -59,11 +59,11 @@ Speech-to-text (Deepgram), the interviewer LLM (OpenAI), and text-to-speech (Min
 | `COACH_TTS_VOICE_ID` | no | MiniMax voice id for the interviewer. |
 | `COACH_FEEDBACK_MODEL` | no | Defaults to `claude-opus-5`; `claude-sonnet-5` is faster and cheaper. |
 
-## Deploy to Vercel (career-coach.cc)
+## Deploy to Vercel (www.career-coach.cc)
 
 1. Import this repo as a Vercel project. `vercel.json` pins the framework to Next.js, so it builds correctly even if the project was first created while the repo was empty (Vercel then guesses "Node" and fails with `No entrypoint found`).
 2. Add the environment variables above (Production, and Preview if you want previews to work).
-3. Add the domain: Project → Settings → Domains → `career-coach.cc` (and optionally `www.career-coach.cc` redirecting to the apex). Follow Vercel's DNS instructions at the registrar.
+3. Add the domains: Project → Settings → Domains → `www.career-coach.cc` (the canonical host) and `career-coach.cc` set to redirect to it. Follow Vercel's DNS instructions at the registrar. If you ever change the canonical host, update `SITE_URL` in `app/layout.tsx` to match, since it drives the canonical link and Open Graph URL.
 4. Deploy. The feedback route sets `maxDuration = 60`, which fits every plan.
 
 CLI equivalent:
@@ -72,7 +72,7 @@ CLI equivalent:
 vercel link
 vercel env add AGORA_APP_ID production        # repeat for the other variables
 vercel --prod
-vercel domains add career-coach.cc
+vercel domains add www.career-coach.cc   # then add career-coach.cc with a redirect to www
 ```
 
 If the Vercel install step complains about the package manager, set `ENABLE_EXPERIMENTAL_COREPACK=1` so it uses the pinned pnpm from `package.json`.
